@@ -1,0 +1,25 @@
+{
+    "reserve": [
+        {"username": "",
+        "password": "",
+        "times": ["9:30","22:00"],
+        "roomid":"9928",
+        "seatid":["060"],
+        "daysofweek": ["Monday"]
+    },
+        {"username": "",
+        "password": "",
+        "times": ["14:30","22:00"],
+        "roomid":"9928",
+        "seatid":["060"],
+        "daysofweek": ["Tuesday"]
+    },
+        {"username": "",
+        "password": "",
+        "times": ["8:40","22:00"],
+        "roomid":"9928",
+        "seatid":["060"],
+        "daysofweek": ["Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    }
+    ]
+}
