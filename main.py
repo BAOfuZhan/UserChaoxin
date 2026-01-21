@@ -3,6 +3,7 @@ import time
 import argparse
 import os
 import logging
+import datetime
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -11,16 +12,22 @@ logging.basicConfig(
 
 from utils import reserve, get_user_credentials
 
-get_current_time = lambda action: (
-    time.strftime("%H:%M:%S", time.localtime(time.time() + 8 * 3600))
-    if action
-    else time.strftime("%H:%M:%S", time.localtime(time.time()))
-)
-get_current_dayofweek = lambda action: (
-    time.strftime("%A", time.localtime(time.time() + 8 * 3600))
-    if action
-    else time.strftime("%A", time.localtime(time.time()))
-)
+
+def _now(action: bool) -> datetime.datetime:
+    """在本地和 GitHub Actions 使用不同的时间基准.
+
+    - 本地模式(action=False): 使用系统本地时间, 方便你本机调试;
+    - GitHub Actions(action=True): 明确使用 UTC+8(北京时间), 不依赖 runner 的时区设置.
+    """
+    if action:
+        # GitHub Actions 上统一用 UTC+8 作为逻辑时间(北京时间)
+        return datetime.datetime.utcnow() + datetime.timedelta(hours=8)
+    # 本地直接用系统时间
+    return datetime.datetime.now()
+
+
+get_current_time = lambda action: _now(action).strftime("%H:%M:%S")
+get_current_dayofweek = lambda action: _now(action).strftime("%A")
 
 
 SLEEPTIME = 0.2  # 每次抢座的间隔
