@@ -251,10 +251,20 @@ class reserve:
         tl = max_loc
         return tl[0]
 
-    def submit(self, times, roomid, seatid, action):
+    def submit(self, times, roomid, seatid, action, endtime_hms: str | None = None):
         for seat in seatid:
             suc = False
             while ~suc and self.max_attempt > 0:
+                # 如果配置了结束时间，并且在 GitHub Actions 模式下，达到或超过结束时间就立刻停止循环
+                if endtime_hms and action:
+                    beijing_now = datetime.datetime.utcnow() + datetime.timedelta(hours=8)
+                    current_hms = beijing_now.strftime("%H:%M:%S")
+                    if current_hms >= endtime_hms:
+                        logging.info(
+                            f"[submit] Current Beijing time {current_hms} >= ENDTIME {endtime_hms}, stop submit loop"
+                        )
+                        return suc
+
                 token, value = self._get_page_token(
                     self.url.format(roomid, seat), require_value=True
                 )

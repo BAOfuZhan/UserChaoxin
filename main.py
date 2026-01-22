@@ -271,7 +271,8 @@ def login_and_reserve(users, usernames, passwords, action, success_list=None):
             s.get_login_status()
             s.login(username, password)
             s.requests.headers.update({"Host": "office.chaoxing.com"})
-            suc = s.submit(times, roomid, seatid, action)
+            # 在 GitHub Actions 中传入 ENDTIME，确保内部循环在超过结束时间后及时停止
+            suc = s.submit(times, roomid, seatid, action, ENDTIME if action else None)
             success_list[index] = suc
     return success_list
 
