@@ -278,7 +278,6 @@ def login_and_reserve(users, usernames, passwords, action, success_list=None):
 
 def main(users, action=False):
     target_dt = _get_beijing_target_from_endtime()
-    current_time = get_hms(action)
     logging.info(
         f"start time {get_log_time(action)}, action {'on' if action else 'off'}, target_dt {target_dt}"
     )
@@ -295,7 +294,15 @@ def main(users, action=False):
     # 只在 GitHub Actions 模式下执行一次“有策略”的第一次尝试
     strategic_done = False
 
-    while current_time < ENDTIME:
+    while True:
+        # 使用逻辑时间 _now(action)，在 GitHub Actions 下就是北京时间
+        current_time = get_hms(action)
+        if current_time >= ENDTIME:
+            logging.info(
+                f"Current time {current_time} >= ENDTIME {ENDTIME}, stop main loop"
+            )
+            return
+
         attempt_times += 1
 
         if not strategic_done and action:
@@ -315,7 +322,6 @@ def main(users, action=False):
         print(
             f"attempt time {attempt_times}, time now {current_time}, success list {success_list}"
         )
-        current_time = get_hms(action)
         if sum(success_list) == today_reservation_num:
             print(f"reserved successfully!")
             return
