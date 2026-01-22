@@ -8,11 +8,23 @@ from zoneinfo import ZoneInfo
 
 # 统一日志时间为北京时间，方便在 GitHub Actions 日志中查看
 # 精确到毫秒，格式示例：2026-01-22 19:16:59.123 [Asia/Shanghai] - INFO - ...
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s.%(msecs)03d [Asia/Shanghai] - %(levelname)s - %(message)s",
+class BeijingFormatter(logging.Formatter):
+    def formatTime(self, record, datefmt=None):
+        """始终将日志时间格式化为北京时间。"""
+        dt = datetime.datetime.fromtimestamp(record.created, ZoneInfo("Asia/Shanghai"))
+        if datefmt:
+            return dt.strftime(datefmt)
+        return dt.isoformat()
+
+
+_formatter = BeijingFormatter(
+    fmt="%(asctime)s.%(msecs)03d [Asia/Shanghai] - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
+_handler = logging.StreamHandler()
+_handler.setFormatter(_formatter)
+
+logging.basicConfig(level=logging.INFO, handlers=[_handler])
 
 
 def _beijing_now() -> datetime.datetime:
