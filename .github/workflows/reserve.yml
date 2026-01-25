@@ -1,6 +1,6 @@
 on:
-  repository_dispatch：
-    type：[cron]
+  repository_dispatch:
+    type: [cron]
   workflow_dispatch:        # 允许手动开/关
 
 jobs:
