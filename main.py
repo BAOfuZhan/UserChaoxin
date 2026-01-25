@@ -65,7 +65,7 @@ RESERVE_NEXT_DAY = False  # 预约明天而不是今天的
 # STRATEGY_LOGIN_LEAD_SECONDS: 在目标时间前多少秒开始进行登录和基础 session/token 预热
 STRATEGY_LOGIN_LEAD_SECONDS = 18
 # STRATEGY_SLIDER_LEAD_SECONDS: 在目标时间前多少秒开始进行滑块验证
-STRATEGY_SLIDER_LEAD_SECONDS = 10
+STRATEGY_SLIDER_LEAD_SECONDS = 14
 # TARGET_OFFSET1_MS / TARGET_OFFSET2_MS:
 # 在目标时间点之后再延迟多少毫秒提交，分别用于第 1 次 / 第 2 次带验证码的提交
 # 例如：600ms 和 1300ms
