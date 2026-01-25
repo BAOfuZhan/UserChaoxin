@@ -55,7 +55,7 @@ get_current_dayofweek = lambda action: _now(action).strftime("%A")
 
 
 SLEEPTIME = 0.1  # 每次抢座的间隔
-ENDTIME = "12:55:00"  # 根据学校的预约座位时间+1min即可
+ENDTIME = "08:01:00"  # 根据学校的预约座位时间+1min即可
 
 ENABLE_SLIDER = True  # 是否有滑块验证（调试阶段先关闭）
 MAX_ATTEMPT = 205  # 最大尝试次数
@@ -69,8 +69,8 @@ STRATEGY_SLIDER_LEAD_SECONDS = 10
 # TARGET_OFFSET1_MS / TARGET_OFFSET2_MS:
 # 在目标时间点之后再延迟多少毫秒提交，分别用于第 1 次 / 第 2 次带验证码的提交
 # 例如：600ms 和 1300ms
-TARGET_OFFSET1_MS = 600
-TARGET_OFFSET2_MS = 1300
+TARGET_OFFSET1_MS = 450
+TARGET_OFFSET2_MS = 1176
 
 
 def _get_beijing_target_from_endtime() -> datetime.datetime:
