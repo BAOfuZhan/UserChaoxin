@@ -76,8 +76,8 @@ STRATEGY_SLIDER_LEAD_SECONDS = 10
 # 在目标时间点之后再延迟多少毫秒提交，分别用于第 1 / 2 / 3 次带验证码的提交
 # 例如：600ms、1300ms、2000ms
 TARGET_OFFSET1_MS = 700
-TARGET_OFFSET2_MS = 2000
-TARGET_OFFSET3_MS = 1200
+TARGET_OFFSET2_MS = 1800
+TARGET_OFFSET3_MS = 900
 
 
 def _get_beijing_target_from_endtime() -> datetime.datetime:
