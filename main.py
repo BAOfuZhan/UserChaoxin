@@ -256,49 +256,62 @@ def strategic_first_attempt(
             value=value1,
         )
 
-        # 如果第一次没有成功：复用第一次获取的页面 token，再延迟 TARGET_OFFSET2_MS 毫秒提交第二次
+        # 如果第一次没有成功：为第二次提交重新获取页面 token，再延迟 TARGET_OFFSET2_MS 毫秒提交
         if not suc:
-            logging.info("[strategic] First submit failed, prepare second submit with same page token")
+            logging.info("[strategic] First submit failed, prepare second submit with NEW page token")
 
-            send_dt2 = _beijing_now() + datetime.timedelta(milliseconds=TARGET_OFFSET2_MS)
-            while _beijing_now() < send_dt2:
-                time.sleep(0.02)
-
-            logging.info(
-                f"[strategic] Second submit at {send_dt2} (now + {TARGET_OFFSET2_MS}ms) with reused page token"
+            # 先重新获取一次页面 token
+            token2, value2 = s._get_page_token(
+                s.url.format(roomid, first_seat), require_value=True
             )
-            suc = s.get_submit(
-                url=s.submit_url,
-                times=times,
-                token=token1,
-                roomid=roomid,
-                seatid=first_seat,
-                captcha=captcha2,
-                action=action,
-                value=value1,
-            )
+            if not token2:
+                logging.error("[strategic] Failed to get page token for second submit, skip to third/normal flow")
+            else:
+                send_dt2 = _beijing_now() + datetime.timedelta(milliseconds=TARGET_OFFSET2_MS)
+                while _beijing_now() < send_dt2:
+                    time.sleep(0.02)
 
-        # 如果第二次仍未成功：继续复用同一个 token，再延迟 TARGET_OFFSET3_MS 毫秒提交第三次
+                logging.info(
+                    f"[strategic] Second submit at {send_dt2} (now + {TARGET_OFFSET2_MS}ms) with NEW page token"
+                )
+                suc = s.get_submit(
+                    url=s.submit_url,
+                    times=times,
+                    token=token2,
+                    roomid=roomid,
+                    seatid=first_seat,
+                    captcha=captcha2,
+                    action=action,
+                    value=value2,
+                )
+
+        # 如果第二次仍未成功：为第三次提交再次获取新的 token，再延迟 TARGET_OFFSET3_MS 毫秒提交
         if not suc:
-            logging.info("[strategic] Second submit failed, prepare third submit with same page token")
+            logging.info("[strategic] Second submit failed, prepare third submit with NEW page token")
 
-            send_dt3 = _beijing_now() + datetime.timedelta(milliseconds=TARGET_OFFSET3_MS)
-            while _beijing_now() < send_dt3:
-                time.sleep(0.02)
+            token3, value3 = s._get_page_token(
+                s.url.format(roomid, first_seat), require_value=True
+            )
+            if not token3:
+                logging.error("[strategic] Failed to get page token for third submit, give up strategic submits for this config")
+            else:
+                send_dt3 = _beijing_now() + datetime.timedelta(milliseconds=TARGET_OFFSET3_MS)
+                while _beijing_now() < send_dt3:
+                    time.sleep(0.02)
 
-            logging.info(
-                f"[strategic] Third submit at {send_dt3} (now + {TARGET_OFFSET3_MS}ms) with reused page token"
-            )
-            suc = s.get_submit(
-                url=s.submit_url,
-                times=times,
-                token=token1,
-                roomid=roomid,
-                seatid=first_seat,
-                captcha=captcha3,
-                action=action,
-                value=value1,
-            )
+                logging.info(
+                    f"[strategic] Third submit at {send_dt3} (now + {TARGET_OFFSET3_MS}ms) with NEW page token"
+                )
+                suc = s.get_submit(
+                    url=s.submit_url,
+                    times=times,
+                    token=token3,
+                    roomid=roomid,
+                    seatid=first_seat,
+                    captcha=captcha3,
+                    action=action,
+                    value=value3,
+                )
 
         success_list[index] = suc
 
